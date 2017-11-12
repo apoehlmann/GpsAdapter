@@ -18,8 +18,6 @@ import de.apoehlmann.gps.configuration.GpsModus;
 final class GpsAdapterImpl extends BaseGpsAdapter implements LocationListener {
 
     private final LocationManager mLocationManager;
-    private final Long[] minTimes = new Long[] {200L, 600L, 1000L};
-    private final Float[] minDistances = new Float[] {50F, 250F, 500F };
 
     GpsAdapterImpl(LocationManager locationManager) {
         mLocationManager = locationManager;
@@ -29,8 +27,10 @@ final class GpsAdapterImpl extends BaseGpsAdapter implements LocationListener {
     public void start(GpsModus modus) {
         super.start(modus);
         try {
-            Criteria criteria = new Criteria();//TODO write Criterias
-            mLocationManager.requestLocationUpdates(minTimes[0], minDistances[0], criteria,  this, null);
+            Criteria criteria = new Criteria();
+            long minTime = modus.getConfiguration().getMinTime();
+            float minDistances = modus.getConfiguration().getMinDistance();
+            mLocationManager.requestLocationUpdates(minTime, minDistances, criteria,  this, null);
         } catch (SecurityException e) {
             error(e);
         }
